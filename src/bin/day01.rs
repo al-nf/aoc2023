@@ -1,5 +1,4 @@
 use std::{env, fs::File, io::{self, BufRead}};
-use aho_corasick::AhoCorasick;
 
 fn main() -> io::Result<()>
 {
@@ -35,9 +34,9 @@ fn part1(data: &Vec<String>)
 
     let mut ch1 = '-';
     let mut ch2 = '-';
-    for i in 0..data.len()
+    for str in data
     {
-        for c in data[i].chars()
+        for c in str.chars()
         {
             if c.is_numeric()
             {
@@ -46,7 +45,7 @@ fn part1(data: &Vec<String>)
             }
         }
 
-        for c in data[i].chars().rev()
+        for c in str.chars().rev()
         {
             if c.is_numeric()
             {
@@ -68,24 +67,29 @@ fn part1(data: &Vec<String>)
 
 fn part2(data: &Vec<String>)
 {
-    let mut sum: i32 = 0;
+    let mut sum: i64 = 0;
 
     let mut strs: Vec<String> = Vec::with_capacity(data.len());
     for str in data
     {
-        let patterns = &["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-        let str_tmp = str;
-        let replace_with = &["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-        let ac = AhoCorasick::new(patterns);
-        let result = ac.replace_all(str_tmp, replace_with);
-        strs.push(str_tmp.to_string());
+        let mut result = str.to_string();
+        result = result.replace("one", "o1e");
+        result = result.replace("two", "t2o");
+        result = result.replace("three", "t3e");
+        result = result.replace("four", "f4r");
+        result = result.replace("five", "f5e");
+        result = result.replace("six", "s6x");
+        result = result.replace("seven", "s7n");
+        result = result.replace("eight", "e8t");
+        result = result.replace("nine", "n9e");
+        strs.push(result.to_string());
     }
     
     let mut ch1 = '-';
     let mut ch2 = '-';
-    for i in 0..strs.len()
+    for str in strs
     {
-        for c in strs[i].chars()
+        for c in str.chars()
         {
             if c.is_numeric()
             {
@@ -94,7 +98,7 @@ fn part2(data: &Vec<String>)
             }
         }
 
-        for c in strs[i].chars().rev()
+        for c in str.chars().rev()
         {
             if c.is_numeric()
             {
@@ -106,7 +110,7 @@ fn part2(data: &Vec<String>)
         if ch1 != '-' && ch2 != '-'
         {
             let str = format!("{}{}", ch1, ch2);
-            let term:i32 = str.parse().expect("Failed to parse string to int32");
+            let term:i64 = str.parse().expect("Failed to parse string to int32");
             sum += term;
 
         }
