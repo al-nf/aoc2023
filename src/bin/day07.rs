@@ -83,42 +83,6 @@ fn convert_values(input: String, part2: bool) -> Vec<i32> {
 
     }
 
-    /*
-    if part2 {
-        let mut frequency: HashMap<i32, i32> = HashMap::new();
-
-        // Count the frequency of each number
-        for &num in &output {
-            *frequency.entry(num).or_insert(0) += 1;
-        }
-
-        // Find the most frequent and largest integer
-        let mut most_frequent = output[0];
-        let mut max_count = 0;
-
-        for (&num, &count) in &frequency {
-            if count > max_count || (count == max_count && num > most_frequent) {
-                most_frequent = num;
-                max_count = count;
-            }
-        }
-
-        for num in &output {
-            print!("{} ", num);
-        }
-        println!("");
-        for i in 0..output.len() {
-            if output[i] == 0 {
-                output[i] = most_frequent;
-            }
-        }
-        for num in &output {
-            print!("{} ", num);
-        }
-        println!("");
-        println!("");
-    }
-    */
     /* 
      * This is actually the correct way to evaluate a hand like in poker. I spent over half an hour
      * doing this just to find that the puzzle description does not want this.
@@ -181,8 +145,6 @@ fn classify_hand(hand: String, part2: bool) -> i32 {
             *counts.entry(card).or_insert(0) += 1;
         }
     }
-
-    
 
     let mut count_values: Vec<_> = counts.values().cloned().collect();
     count_values.sort_unstable_by(|a, b| b.cmp(a)); 
