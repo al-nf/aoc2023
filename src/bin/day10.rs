@@ -49,10 +49,10 @@ fn part1(data: &Vec<Vec<char>>) {
             _ => false
         };
         let condition2 = match direction {
-            0 => to == '|' || to == '7' || to == 'F' || to == '.' || to == 'S',
-            1 => to == '-' || to == 'J' || to == '7' || to == '.' || to == 'S',
-            2 => to == '|' || to == 'L' || to == 'J' || to == '.' || to == 'S',
-            3 => to == '-' || to == 'L' || to == 'F' || to == '.' || to == 'S',
+            0 => to == '|' || to == '7' || to == 'F',
+            1 => to == '-' || to == 'J' || to == '7',
+            2 => to == '|' || to == 'L' || to == 'J',
+            3 => to == '-' || to == 'L' || to == 'F',
             _ => false
         };
         condition1 && condition2
@@ -89,7 +89,7 @@ fn part1(data: &Vec<Vec<char>>) {
         (furthest_pt, max_steps)
     };
 
-    let ((s_x, s_y), steps) = bfs(data, start);
+    let ((_s_x, _s_y), steps) = bfs(data, start);
     println!("steps: {}", steps);
 }
 fn part2(data: &Vec<Vec<char>>) {
