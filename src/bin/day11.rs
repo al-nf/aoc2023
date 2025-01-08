@@ -75,7 +75,9 @@ fn part1(data: &[Vec<char>]) {
     let mut galaxies: Vec<(usize, usize)> = Vec::new();
     for i in 0..cosmos.len() {
         for j in 0..cosmos[0].len() {
-            galaxies.push((i, j));
+            if cosmos[i][j] == '#' {
+                galaxies.push((i, j));
+            }
         }
     }
     let dist = |p1: (usize, usize), p2: (usize, usize)| -> i32 {
@@ -95,9 +97,40 @@ fn part1(data: &[Vec<char>]) {
 }
 
 fn part2(data: &[Vec<char>]) {
+    let cosmos = data.to_vec();
+
+    let mut galaxies: Vec<(usize, usize)> = Vec::new();
+    for i in 0..cosmos.len() {
+        for j in 0..cosmos[0].len() {
+            if cosmos[i][j] == '#' {
+                galaxies.push((i, j));
+            }
+        }
+    }
+    let dist = |p1: (usize, usize), p2: (usize, usize)| -> u64 {
+        ((p2.0 as i32 - p1.0 as i32).abs() + (p2.1 as i32 - p1.1 as i32).abs()) as u64
+    };
+    
+    let mut sum: u64 = 0;
+    for i in 0..galaxies.len() {
+        for j in (i + 1)..galaxies.len() {
+            let galaxy1 = galaxies[i];
+            let galaxy2 = galaxies[j];
+
+            sum += dist(galaxy1, galaxy2);
+        }
+    }
+    println!("sum: {}", sum);
+}
+
+/*
+ * This brute force method solves the correct answer, but crashes at large values of k.
+fn part2(data: &[Vec<char>]) {
     let mut cosmos: Vec<Vec<char>> = Vec::new();
     let mut row_empty: Vec<bool> = Vec::new();
     let mut col_empty: Vec<bool> = Vec::new();
+
+    let k = 1000000-1;
 
     for row in data {
         let mut has_galaxy = false;
@@ -123,32 +156,40 @@ fn part2(data: &[Vec<char>]) {
         for j in 0..data[i].len() {
             new_row.push(data[i][j]);
             if col_empty[j] {
-                new_row.push('.');
+                for z in 0..k { 
+                    new_row.push('.');
+                }
             }
         }
         
         cosmos.push(new_row);
         
         if row_empty[i] {
-            let mut empty_row = Vec::new();
-            for j in 0..data[i].len() {
-                empty_row.push('.');
-                if col_empty[j] {
+            for z in 0..k {
+                let mut empty_row = Vec::new();
+                for j in 0..data[i].len() {
                     empty_row.push('.');
+                    if col_empty[j] {
+                        for s in 0..k { 
+                            empty_row.push('.');
+                        }
+                    }
                 }
+                cosmos.push(empty_row);
             }
-            cosmos.push(empty_row);
         }
     }
     
-    let mut galaxies: Vec<(usize, usize)> = Vec::new();
+    let mut galaxies: Vec<(u64, u64)> = Vec::new();
     for i in 0..cosmos.len() {
         for j in 0..cosmos[0].len() {
-            galaxies.push((i, j));
+            if cosmos[i][j] == '#' {
+                galaxies.push((i as u64, j as u64));
+            }
         }
     }
-    let dist = |p1: (usize, usize), p2: (usize, usize)| -> u64 {
-        ((p2.0 as i32 - p1.0 as i32).abs() + (p2.1 as i32 - p1.1 as i32).abs() * (1000000-1)) as u64
+    let dist = |p1: (u64, u64), p2: (u64, u64)| -> u64 {
+        ((p2.0 as i64 - p1.0 as i64).abs() + (p2.1 as i64 - p1.1 as i64).abs()) as u64
     };
     
     let mut sum: u64 = 0;
@@ -162,4 +203,4 @@ fn part2(data: &[Vec<char>]) {
     }
     println!("sum: {}", sum);
 }
-
+*/
