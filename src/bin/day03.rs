@@ -26,7 +26,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-fn part1(data: &Vec<Vec<char>>) {
+fn part1(data: &[Vec<char>]) {
     let mut parts: Vec<(i32, (usize, usize), usize)> = Vec::new();
 
     let re = Regex::new(r"\d+").unwrap();
@@ -81,7 +81,7 @@ fn part1(data: &Vec<Vec<char>>) {
     println!("sum: {}", sum);
 }
 
-fn part2(data: &Vec<Vec<char>>) {
+fn part2(data: &[Vec<char>]) {
     let re = Regex::new(r"\d+").unwrap(); 
 
     let mut number_map: Vec<Vec<Option<i32>>> = vec![vec![None; data[0].len()]; data.len()];
