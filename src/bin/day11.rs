@@ -1,4 +1,4 @@
-use std::{env, fs::File, io::{self, BufRead}};
+use std::{env, fs::File, io::{self, BufRead}, cmp};
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -98,6 +98,28 @@ fn part1(data: &[Vec<char>]) {
 
 fn part2(data: &[Vec<char>]) {
     let cosmos = data.to_vec();
+    let mut row_empty: Vec<bool> = Vec::new();
+    let mut col_empty: Vec<bool> = Vec::new();
+    let k = 1000000;
+
+    for row in data {
+        let mut has_galaxy = false;
+        for ch in row {
+            if *ch == '#' {has_galaxy = true;}
+        }
+        row_empty.push(!has_galaxy)
+    }
+
+    for i in 0..data[0].len() {
+        let mut has_galaxy = false;
+        for j in 0..data.len() {
+            if data[j][i] == '#' {
+                has_galaxy = true;
+                break;
+            }
+        }
+        col_empty.push(!has_galaxy); 
+    }
 
     let mut galaxies: Vec<(usize, usize)> = Vec::new();
     for i in 0..cosmos.len() {
@@ -107,8 +129,21 @@ fn part2(data: &[Vec<char>]) {
             }
         }
     }
+
     let dist = |p1: (usize, usize), p2: (usize, usize)| -> u64 {
-        ((p2.0 as i32 - p1.0 as i32).abs() + (p2.1 as i32 - p1.1 as i32).abs()) as u64
+        let mut distance = ((p2.0 as i32 - p1.0 as i32).abs() + (p2.1 as i32 - p1.1 as i32).abs()) as u64;
+
+        for i in cmp::min(p1.0, p2.0) + 1..p2.0 {
+            if row_empty[i] {
+                distance += k - 1;
+            }
+        }
+        for j in cmp::min(p1.1, p2.1) + 1..cmp::max(p1.1, p2.1) {
+            if col_empty[j] {
+                distance += k - 1;
+            }
+        }
+        distance
     };
     
     let mut sum: u64 = 0;
