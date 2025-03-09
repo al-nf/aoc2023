@@ -16,15 +16,17 @@ fn main() -> io::Result<()> {
     for line in reader.lines() {
         let line = line?; 
         if !line.is_empty() {
-            let chars: Vec<char> = line.chars().collect();
-            map.push(chars);
+            map.push(line.chars().collect());
         } else {
-            data.push(map.clone());
-            map.clear();
+            if !map.is_empty() {
+                data.push(map.clone());
+                map.clear();
+            }
         }
     }
-    data.push(map.clone());
-    map.clear();
+    if !map.is_empty() {
+        data.push(map);
+    }
 
     println!("-- PART 1 --");
     part1(&data);
@@ -36,70 +38,56 @@ fn main() -> io::Result<()> {
 fn part1(data: &[Vec<Vec<char>>]) {
     let mut sum: u64 = 0;
 
-    let columns_are_equal = |pattern: Vec<Vec<char>>, col1: usize, col2: usize| -> bool {
-        for i in 0..pattern.len() {
-            if pattern[i][col1] != pattern[i][col2] {
-                return false;
-            }
-        }
-        true
-    };
-
-    let perfect_reflection = |pattern: Vec<Vec<char>>, horizontal: bool, index: usize| -> bool {
-        if horizontal {
-            if index == 0 || index == pattern.len()-1 {
-                return false;
-            }
-            let mut lower = index;
-            let mut upper = index + 1;
-            
-            while upper < pattern.len() {
-                if pattern[lower] != pattern[upper] {
-                    return false;
-                }
-                if lower == 0 {
-                    return false;
-                }
-                lower -= 1;
-                upper += 1;
-            }
-            return true;
-        }
-        if index == 0 || index == pattern[0].len()-1 {
-            return false;
-        }
-
-        let mut lower = index;
-        let mut upper = index + 1;
-
-        while upper < pattern[0].len() {
-            if !columns_are_equal(pattern.clone(), lower, upper) {
+    let is_horizontal_reflection = |pattern: &[Vec<char>], row: usize| -> bool {
+        let mut lower = row;
+        let mut upper = row + 1;
+        while lower < pattern.len() && upper < pattern.len() {
+            if pattern[lower] != pattern[upper] {
                 return false;
             }
             if lower == 0 {
-                return false;
+                break;
             }
             lower -= 1;
             upper += 1;
         }
-        return true;
+        true
     };
-    for pattern in data.iter() {
-        for i in 0..pattern.len() {
-            if perfect_reflection(pattern.to_vec(), true, i) {
-                sum += 100 * (i+1) as u64;
+
+    let is_vertical_reflection = |pattern: &[Vec<char>], col: usize| -> bool {
+        let mut lower = col;
+        let mut upper = col + 1;
+        while upper < pattern[0].len() {
+            for row in pattern.iter() {
+                if row[lower] != row[upper] {
+                    return false;
+                }
+            }
+            if lower == 0 {
+                break;
+            }
+            lower -= 1;
+            upper += 1;
+        }
+        true
+    };
+
+    for pattern in data {
+        for i in 0..pattern.len() - 1 {
+            if is_horizontal_reflection(pattern, i) {
+                sum += 100 * (i + 1) as u64;
             }
         }
-
-        for i in 0..pattern[0].len() {
-            if perfect_reflection(pattern.to_vec(), false, i) {
-                sum += (i+1) as u64;
+        for i in 0..pattern[0].len() - 1 {
+            if is_vertical_reflection(pattern, i) {
+                sum += (i + 1) as u64;
             }
         }
     }
+    
     println!("sum: {}", sum);
 }
 
 fn part2(data: &[Vec<Vec<char>>]) {
-
 }
+
